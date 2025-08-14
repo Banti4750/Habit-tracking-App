@@ -6,28 +6,35 @@ export default function Auth() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    const [isSignUp, setIsSignUp] = useState(false);
+    const [error, setError] = useState("")
 
-    const handleSignUp = async () => {
+    const handleSwitchMode = () => {
+        setIsSignUp(!isSignUp)
+    }
+
+    const handleAuth = async () => {
         setIsLoading(true)
-        // Add your authentication logic here
-        console.log('Sign up with:', { email, password })
+        if (email.slice(email.length - 9, email.length) !== "@gmail.com") {
+            setError("Must be an email")
+        }
+        if (password.length < 6) {
+            setError("Password must be greater than 6 char.")
+        }
         setIsLoading(false)
     }
 
-    const handleSignIn = () => {
-        // Navigate to sign in screen or toggle mode
-        console.log('Navigate to sign in')
-    }
+
 
     return (
         <KeyboardAvoidingView
             className="flex-1"
             behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
-            <View className="flex-1 justify-center items-center px-5">
-                <View className="flex flex-col gap-5 w-full max-w-sm">
-                    <Text className="text-center mt-4 text-3xl font-bold">
-                        Create account
+            <View className="flex-1 justify-center items-center p-5">
+                <View className="flex flex-col gap-5 w-full ">
+                    <Text className="text-center mt-4 text-3xl font-bold self-center">
+                        {isSignUp ? "Create account" : "Welcome Back"}
                     </Text>
 
                     <TextInput
@@ -51,22 +58,24 @@ export default function Auth() {
                         className="mb-2"
                     />
 
+                    {error && <Text style={{ color: 'red' }}>{error}</Text>}
+
                     <Button
                         mode='contained'
-                        onPress={handleSignUp}
+                        onPress={handleAuth}
                         loading={isLoading}
                         disabled={!email || !password || isLoading}
                         className="mt-2"
                     >
-                        Sign up
+                        {isSignUp ? "Sign Up" : "Sign In"}
                     </Button>
 
                     <Button
                         mode='text'
-                        onPress={handleSignIn}
+                        onPress={handleSwitchMode}
                         className="mt-1"
                     >
-                        Already have an account? Sign In
+                        {isSignUp ? "Already have an account? Sign In" : "Dont have account? Sign Up"}
                     </Button>
                 </View>
             </View>
