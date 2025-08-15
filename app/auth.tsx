@@ -1,3 +1,5 @@
+import { useAuth } from '@/lib/auth-context'
+import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
 import { Button, Text, TextInput } from "react-native-paper"
@@ -5,23 +7,42 @@ import { Button, Text, TextInput } from "react-native-paper"
 export default function Auth() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+    // const [isLoading, setIsLoading] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false);
     const [error, setError] = useState("")
+    const { signIn, signUp } = useAuth();
+    const router = useRouter();
+
 
     const handleSwitchMode = () => {
         setIsSignUp(!isSignUp)
     }
 
     const handleAuth = async () => {
-        setIsLoading(true)
+        // setIsLoading(true)
         if (email.slice(email.length - 9, email.length) !== "@gmail.com") {
             setError("Must be an email")
         }
         if (password.length < 6) {
             setError("Password must be greater than 6 char.")
         }
-        setIsLoading(false)
+        setError("")
+        if (isSignUp) {
+            const error = await signUp(email, password);
+            if (error) {
+                setError(error)
+                return
+            }
+        } else {
+            const error = await signIn(email, password);
+            if (error) {
+                setError(error)
+                return
+            }
+            router.replace('/')
+        }
+
+        // setIsLoading(false)
     }
 
 
@@ -63,8 +84,8 @@ export default function Auth() {
                     <Button
                         mode='contained'
                         onPress={handleAuth}
-                        loading={isLoading}
-                        disabled={!email || !password || isLoading}
+                        // loading={isLoading}
+                        disabled={!email || !password}
                         className="mt-2"
                     >
                         {isSignUp ? "Sign Up" : "Sign In"}
