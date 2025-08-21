@@ -1,4 +1,3 @@
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
@@ -36,9 +35,10 @@ export default function RootLayout() {
           fontWeight: "700",
           color: "#111827",
         },
-        headerTitleAlign: "center", // 👈 centers the title
+        headerTitleAlign: "center",
       }}
     >
+      {/* Today Tab */}
       <Tabs.Screen
         name="index"
         options={{
@@ -53,35 +53,37 @@ export default function RootLayout() {
         }}
       />
 
+
+
+      {/* Add Habit Tab */}
       <Tabs.Screen
-        name="habits"
+        name="add-habit"
         options={{
-          title: "Habits",
+          title: "Add Habit",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
-              <FontAwesome5 name="check-circle" size={24} color={color} />
+              <Ionicons name="add-circle" size={28} color={color} />
             ) : (
-              <FontAwesome5 name="circle" size={24} color={color} />
+              <Ionicons name="add-circle-outline" size={26} color={color} />
             ),
-          headerTitle: "My Habits",
+          headerTitle: "Create a New Habit",
         }}
       />
 
+      {/* Streak Tab */}
       <Tabs.Screen
-        name="progress"
+        name="streak"
         options={{
-          title: "Progress",
+          title: "Streak",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
-              <Ionicons name="stats-chart" size={26} color={color} />
+              <MaterialIcons name="local-fire-department" size={26} color={color} />
             ) : (
-              <Ionicons name="stats-chart-outline" size={24} color={color} />
+              <MaterialIcons name="local-fire-department" size={24} color={color} />
             ),
-          headerTitle: "Your Progress",
+          headerTitle: "Your Streaks",
         }}
       />
-
-
     </Tabs>
   );
 }

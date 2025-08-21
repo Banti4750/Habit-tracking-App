@@ -1,12 +1,12 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
-const progress = () => {
+const streak = () => {
     return (
         <View>
-            <Text>progress</Text>
+            <Text>streak</Text>
         </View>
     )
 }
 
-export default progress
+export default streak
