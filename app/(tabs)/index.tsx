@@ -1,8 +1,9 @@
 import { database, DATABASE_ID, HABBIT_COLLECTION_ID } from "@/lib/appwrite";
 import { useAuth } from "@/lib/auth-context";
 import { Habit } from "@/types/database.types";
+import { useFocusEffect } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useCallback } from "react";
 import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { Query } from "react-native-appwrite";
 import { Button } from "react-native-paper";
@@ -15,11 +16,13 @@ export default function Index() {
   const [loading, setLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  useEffect(() => {
+  useFocusEffect(
+  useCallback(() => {
     if (user) {
       fetchHabits();
     }
-  }, [user]);
+  }, [user])
+);
 
   const fetchHabits = async () => {
     setLoading(true);
@@ -29,7 +32,7 @@ export default function Index() {
         HABBIT_COLLECTION_ID,
         [Query.equal("user_id", user?.$id ?? "")]
       );
-      console.log(response.documents);
+      // console.log(response.documents);
       setHabits(response.documents as Habit[]);
     } catch (error) {
       console.error(error);

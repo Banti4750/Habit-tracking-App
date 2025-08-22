@@ -34,6 +34,13 @@ const AddHabbitScreen = () => {
         return true;
     };
 
+    const resetForm = () => {
+        setTitle("");
+        setDescription("");
+        setFrequency("daily");
+        setError("");
+    };
+
     const handleAddHabit = async () => {
         if (!user || !validateForm()) {
             return;
@@ -51,6 +58,8 @@ const AddHabbitScreen = () => {
                 created_at: new Date().toISOString(),
             });
 
+            // Reset form after successful creation
+            resetForm();
             router.back(); // navigate back to habits list
         } catch (err) {
             console.error("Error creating habit:", err);
