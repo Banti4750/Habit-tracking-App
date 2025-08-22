@@ -8,7 +8,6 @@ import { Animated, FlatList, RefreshControl, Text, TouchableOpacity, View } from
 import { Query } from "react-native-appwrite";
 import { Swipeable } from "react-native-gesture-handler";
 import { Button } from "react-native-paper";
-import './../../global.css';
 
 export default function Index() {
   const router = useRouter();
@@ -35,6 +34,7 @@ export default function Index() {
         HABBIT_COLLECTION_ID,
         [Query.equal("user_id", user?.$id ?? "")]
       );
+      //@ts-ignore
       setHabits(response.documents as Habit[]);
     } catch (error) {
       console.error(error);

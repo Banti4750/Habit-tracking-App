@@ -63,6 +63,7 @@ const AddHabbitScreen = () => {
             router.back(); // navigate back to habits list
         } catch (err) {
             console.error("Error creating habit:", err);
+            //@ts-ignore
             setError(err?.message || "Something went wrong while adding habit.");
         } finally {
             setLoading(false);

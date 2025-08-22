@@ -29,6 +29,7 @@ const Streak = () => {
         HABBIT_COLLECTION_ID,
         [Query.equal("user_id", user?.$id ?? "")]
       );
+      //@ts-ignore
       setHabits(response.documents as Habit[]);
     } catch (error) {
       console.error(error);
