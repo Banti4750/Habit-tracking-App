@@ -53,34 +53,91 @@ export default function Index() {
   };
 
   const markHabitDone = async (habitId: string) => {
-    try {
-      const habit = habits.find(h => h.$id === habitId);
-      if (!habit) return;
+  try {
+    const habit = habits.find(h => h.$id === habitId);
+    if (!habit) return;
 
-      const today = new Date().toISOString().split('T')[0];
-      const lastCompleted = habit.last_completed ? new Date(habit.last_completed).toISOString().split('T')[0] : '';
-      
-      // Check if already completed today
-      if (lastCompleted === today) {
-        return; // Already completed today
-      }
-
-      const updatedHabit = {
-        ...habit,
-        streak_count: habit.streak_count + 1,
-        last_completed: new Date().toISOString(),
-      };
-
-      await database.updateDocument(DATABASE_ID, HABBIT_COLLECTION_ID, habitId, {
-        streak_count: updatedHabit.streak_count,
-        last_completed: updatedHabit.last_completed,
-      });
-
-      setHabits(habits.map(h => h.$id === habitId ? updatedHabit : h));
-    } catch (error) {
-      console.error("Error marking habit as done:", error);
+    const today = new Date().toISOString().split('T')[0];
+    const lastCompleted = habit.last_completed ? new Date(habit.last_completed).toISOString().split('T')[0] : '';
+    
+    // Check if already completed today
+    if (lastCompleted === today) {
+      return; // Already completed today
     }
-  };
+
+    let newStreakCount = habit.streak_count;
+
+    // Calculate streak properly
+    if (habit.last_completed) {
+      const lastCompletedDate = new Date(habit.last_completed);
+      const todayDate = new Date();
+      const diffTime = todayDate.getTime() - lastCompletedDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      // For daily habits
+      if (habit.frequency.toLowerCase() === 'daily') {
+        if (diffDays === 1) {
+          // Consecutive day - increment streak
+          newStreakCount = habit.streak_count + 1;
+        } else if (diffDays > 1) {
+          // Streak broken - reset to 1
+          newStreakCount = 1;
+        } else {
+          // Same day (shouldn't happen due to check above, but safety)
+          return;
+        }
+      } 
+      // For weekly habits
+      else if (habit.frequency.toLowerCase() === 'weekly') {
+        if (diffDays >= 6 && diffDays <= 8) {
+          // Within weekly range - increment streak
+          newStreakCount = habit.streak_count + 1;
+        } else if (diffDays > 8) {
+          // Streak broken - reset to 1
+          newStreakCount = 1;
+        } else {
+          // Too soon
+          return;
+        }
+      }
+      // For monthly habits
+      else if (habit.frequency.toLowerCase() === 'monthly') {
+        if (diffDays >= 28 && diffDays <= 35) {
+          // Within monthly range - increment streak
+          newStreakCount = habit.streak_count + 1;
+        } else if (diffDays > 35) {
+          // Streak broken - reset to 1
+          newStreakCount = 1;
+        } else {
+          // Too soon
+          return;
+        }
+      }
+      // For other frequencies, just increment
+      else {
+        newStreakCount = habit.streak_count + 1;
+      }
+    } else {
+      // First time completing this habit
+      newStreakCount = 1;
+    }
+
+    const updatedHabit = {
+      ...habit,
+      streak_count: newStreakCount,
+      last_completed: new Date().toISOString(),
+    };
+
+    await database.updateDocument(DATABASE_ID, HABBIT_COLLECTION_ID, habitId, {
+      streak_count: updatedHabit.streak_count,
+      last_completed: updatedHabit.last_completed,
+    });
+
+    setHabits(habits.map(h => h.$id === habitId ? updatedHabit : h));
+  } catch (error) {
+    console.error("Error marking habit as done:", error);
+  }
+};
 
   const closeSwipeable = (habitId: string) => {
     const swipeable = swipeableRefs.current[habitId];

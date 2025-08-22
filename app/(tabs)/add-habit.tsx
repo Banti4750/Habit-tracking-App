@@ -48,15 +48,15 @@ const AddHabbitScreen = () => {
 
         setLoading(true);
         try {
-            await database.createDocument(DATABASE_ID, HABBIT_COLLECTION_ID, ID.unique(), {
-                user_id: user.$id,
-                title: title.trim(),
-                description: description.trim(),
-                frequency,
-                streak_count: 0,
-                last_completed: new Date().toISOString(),
-                created_at: new Date().toISOString(),
-            });
+           await database.createDocument(DATABASE_ID, HABBIT_COLLECTION_ID, ID.unique(), {
+            user_id: user.$id,
+            title: title.trim(),
+            description: description.trim(),
+            frequency,
+            streak_count: 0,
+            last_completed: null, // <-- Change this from new Date().toISOString() to null
+            created_at: new Date().toISOString(),
+        });
 
             // Reset form after successful creation
             resetForm();
