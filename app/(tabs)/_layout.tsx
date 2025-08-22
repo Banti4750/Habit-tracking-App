@@ -42,7 +42,7 @@ export default function RootLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Today",
+          title: "Today Habbits",
           tabBarIcon: ({ color, focused }) =>
             focused ? (
               <MaterialIcons name="today" size={26} color={color} />
